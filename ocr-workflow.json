@@ -95,12 +95,12 @@
     },
     {
       "parameters": {
-        "operation": "Write File to Disk",
-        "path": "={{ $json.targetPath }}",
+        "operation": "write",
+        "filePath": "={{ $json.targetPath }}",
+        "binaryData": "={{ $binary.data }}",
+        "binaryPropertyName": "data",
         "options": {
-          "encoding": "binary",
-          "fromSourcePath": "={{ $json.sourceFilePath }}",
-          "deleteSourceFile": true
+          "encoding": "binary"
         }
       },
       "id": "move-file",
