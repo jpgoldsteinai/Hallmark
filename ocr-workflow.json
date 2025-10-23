@@ -95,9 +95,13 @@
     },
     {
       "parameters": {
-        "operation": "move",
-        "path": "={{ $json.sourceFilePath }}",
-        "newPath": "={{ $json.targetPath }}"
+        "operation": "Write File to Disk",
+        "path": "={{ $json.targetPath }}",
+        "options": {
+          "encoding": "binary",
+          "fromSourcePath": "={{ $json.sourceFilePath }}",
+          "deleteSourceFile": true
+        }
       },
       "id": "move-file",
       "name": "Move to Classified Folder",
