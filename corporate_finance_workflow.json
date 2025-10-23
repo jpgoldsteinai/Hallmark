@@ -1,0 +1,307 @@
+{
+  "name": "Document Processing & Routing Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "upload-document",
+        "method": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook - File Upload",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "upload-doc"
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "options": {
+          "mimeType": "={{ $json.file.mimeType }}",
+          "fileName": "={{ $json.file.filename }}"
+        }
+      },
+      "id": "convert-to-binary",
+      "name": "Convert to Binary",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and detect MIME type\nconst items = [];\n\nfor (const item of $input.all()) {\n  const binary = item.binary;\n  const fileName = Object.keys(binary)[0];\n  const fileData = binary[fileName];\n  \n  // Get MIME type from binary data or detect from extension\n  let mimeType = fileData.mimeType || 'application/octet-stream';\n  \n  // Fallback detection based on file extension\n  const ext = fileName.split('.').pop().toLowerCase();\n  if (!fileData.mimeType) {\n    const mimeMap = {\n      'pdf': 'application/pdf',\n      'doc': 'application/msword',\n      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n      'xls': 'application/vnd.ms-excel',\n      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',\n      'jpg': 'image/jpeg',\n      'jpeg': 'image/jpeg',\n      'png': 'image/png',\n      'txt': 'text/plain',\n      'csv': 'text/csv',\n      'json': 'application/json',\n      'xml': 'application/xml'\n    };\n    mimeType = mimeMap[ext] || mimeType;\n  }\n  \n  items.push({\n    json: {\n      fileName: fileName,\n      mimeType: mimeType,\n      fileSize: fileData.fileSize || 0,\n      fileExtension: ext,\n      uploadTime: new Date().toISOString()\n    },\n    binary: binary\n  });\n}\n\nreturn items;"
+      },
+      "id": "detect-mime",
+      "name": "Detect MIME Type",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract detailed metadata from documents\nconst items = [];\n\nfor (const item of $input.all()) {\n  const binary = item.binary;\n  const fileName = Object.keys(binary)[0];\n  const fileData = binary[fileName];\n  const mimeType = item.json.mimeType;\n  \n  let metadata = {\n    fileName: item.json.fileName,\n    mimeType: mimeType,\n    fileSize: item.json.fileSize,\n    fileExtension: item.json.fileExtension,\n    uploadTime: item.json.uploadTime,\n    // Additional metadata\n    isImage: mimeType.startsWith('image/'),\n    isDocument: mimeType.includes('document') || mimeType.includes('pdf') || mimeType.includes('word'),\n    isSpreadsheet: mimeType.includes('spreadsheet') || mimeType.includes('excel'),\n    isText: mimeType.startsWith('text/'),\n    isArchive: mimeType.includes('zip') || mimeType.includes('compressed'),\n    // File size category\n    sizeCategory: item.json.fileSize < 1000000 ? 'small' : \n                  item.json.fileSize < 10000000 ? 'medium' : 'large'\n  };\n  \n  items.push({\n    json: metadata,\n    binary: binary\n  });\n}\n\nreturn items;"
+      },
+      "id": "extract-metadata",
+      "name": "Extract Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Classify documents based on metadata\nconst items = [];\n\nfor (const item of $input.all()) {\n  const meta = item.json;\n  let classification = 'other';\n  let category = 'uncategorized';\n  let priority = 'normal';\n  \n  // Classification logic based on MIME type and metadata\n  if (meta.isDocument) {\n    classification = 'document';\n    category = 'office-document';\n    \n    // Subcategorize based on file type\n    if (meta.mimeType.includes('pdf')) {\n      category = 'pdf-document';\n    } else if (meta.mimeType.includes('word')) {\n      category = 'word-document';\n    }\n  } else if (meta.isSpreadsheet) {\n    classification = 'spreadsheet';\n    category = 'data-file';\n  } else if (meta.isImage) {\n    classification = 'image';\n    category = 'media-file';\n    \n    // Check for common document scan patterns\n    if (meta.fileName.toLowerCase().includes('scan') || \n        meta.fileName.toLowerCase().includes('invoice') ||\n        meta.fileName.toLowerCase().includes('receipt')) {\n      category = 'scanned-document';\n      priority = 'high';\n    }\n  } else if (meta.isText) {\n    classification = 'text';\n    category = meta.mimeType.includes('csv') ? 'data-file' : 'text-file';\n  } else if (meta.isArchive) {\n    classification = 'archive';\n    category = 'compressed-file';\n  }\n  \n  // Additional classification based on filename patterns\n  const lowerFileName = meta.fileName.toLowerCase();\n  if (lowerFileName.includes('invoice')) {\n    category = 'invoice';\n    priority = 'high';\n  } else if (lowerFileName.includes('contract')) {\n    category = 'contract';\n    priority = 'high';\n  } else if (lowerFileName.includes('report')) {\n    category = 'report';\n    priority = 'medium';\n  }\n  \n  items.push({\n    json: {\n      ...meta,\n      classification: classification,\n      category: category,\n      priority: priority,\n      processingStatus: 'classified'\n    },\n    binary: item.binary\n  });\n}\n\nreturn items;"
+      },
+      "id": "classify-docs",
+      "name": "Classify Documents",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.classification }}",
+              "rightValue": "document",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.classification }}",
+              "rightValue": "spreadsheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.classification }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.classification }}",
+              "rightValue": "text",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "router-switch",
+      "name": "Route by Document Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "path": "/processed/documents/{{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "save-documents",
+      "name": "Save Documents",
+      "type": "n8n-nodes-base.localFilesystem",
+      "typeVersion": 1,
+      "position": [1450, 100]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "path": "/processed/spreadsheets/{{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "save-spreadsheets",
+      "name": "Save Spreadsheets",
+      "type": "n8n-nodes-base.localFilesystem",
+      "typeVersion": 1,
+      "position": [1450, 250]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "path": "/processed/images/{{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "save-images",
+      "name": "Save Images",
+      "type": "n8n-nodes-base.localFilesystem",
+      "typeVersion": 1,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "path": "/processed/other/{{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "save-other",
+      "name": "Save Other Files",
+      "type": "n8n-nodes-base.localFilesystem",
+      "typeVersion": 1,
+      "position": [1450, 550]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"success\": true,\n  \"fileName\": $json.fileName,\n  \"classification\": $json.classification,\n  \"category\": $json.category,\n  \"mimeType\": $json.mimeType,\n  \"fileSize\": $json.fileSize,\n  \"priority\": $json.priority,\n  \"message\": \"File processed and routed successfully\"\n} }}"
+      },
+      "id": "response-node",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1650, 300]
+    }
+  ],
+  "connections": {
+    "Webhook - File Upload": {
+      "main": [
+        [
+          {
+            "node": "Convert to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Binary": {
+      "main": [
+        [
+          {
+            "node": "Detect MIME Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect MIME Type": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata": {
+      "main": [
+        [
+          {
+            "node": "Classify Documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Documents": {
+      "main": [
+        [
+          {
+            "node": "Route by Document Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Document Type": {
+      "main": [
+        [
+          {
+            "node": "Save Documents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Spreadsheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Images",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Other Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Documents": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Spreadsheets": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Images": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Other Files": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
