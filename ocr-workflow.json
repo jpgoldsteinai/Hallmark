@@ -20,9 +20,11 @@
     },
     {
       "parameters": {
-        "operation": "list",
+        "operation": "readdir",
         "path": "/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo/ToProcess",
-        "fileExtension": "pdf"
+        "options": {
+          "fileExtension": "pdf"
+        }
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
