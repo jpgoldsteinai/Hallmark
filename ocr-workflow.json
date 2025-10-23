@@ -21,7 +21,7 @@
     {
       "parameters": {
         "operation": "list",
-        "path": "/path/to/your/ToProcess",
+        "path": "/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo/ToProcess",
         "fileExtension": "pdf"
       },
       "id": "list-pdfs",
@@ -83,7 +83,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Extract classification from Gemini response and determine target folder\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const geminiResponse = item.json.candidates[0].content.parts[0].text.trim();\n  \n  // Map classification to folder\n  let targetFolder = 'Unclassified';\n  \n  if (geminiResponse.toLowerCase().includes('invoice')) {\n    targetFolder = 'Invoices';\n  } else if (geminiResponse.toLowerCase().includes('bank statement')) {\n    targetFolder = 'BankStatements';\n  } else if (geminiResponse.toLowerCase().includes('tax record')) {\n    targetFolder = 'TaxRecords';\n  } else if (geminiResponse.toLowerCase().includes('executive report')) {\n    targetFolder = 'ExecutiveReports';\n  }\n  \n  // Get source file path from earlier node\n  const sourceFilePath = item.json.filePath;\n  const fileName = item.json.fileName;\n  \n  // Construct target path\n  const basePath = sourceFilePath.substring(0, sourceFilePath.lastIndexOf('/'));\n  const processedPath = basePath.replace('/ToProcess', '/Processed');\n  const targetPath = `${processedPath}/${targetFolder}/${fileName}`;\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      sourceFilePath: sourceFilePath,\n      targetPath: targetPath,\n      classification: geminiResponse,\n      targetFolder: targetFolder,\n      processedAt: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
+        "jsCode": "// Extract classification from Gemini response and determine target folder\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const geminiResponse = item.json.candidates[0].content.parts[0].text.trim();\n  \n  // Map classification to folder\n  let targetFolder = 'CouldNotClassify';\n  \n  if (geminiResponse.toLowerCase().includes('invoice')) {\n    targetFolder = 'Invoices';\n  } else if (geminiResponse.toLowerCase().includes('bank statement')) {\n    targetFolder = 'BankStatements';\n  } else if (geminiResponse.toLowerCase().includes('tax record')) {\n    targetFolder = 'TaxRecords';\n  } else if (geminiResponse.toLowerCase().includes('executive report')) {\n    targetFolder = 'ExecutiveReports';\n  }\n  \n  // Get source file path from earlier node\n  const sourceFilePath = item.json.filePath;\n  const fileName = item.json.fileName;\n  \n  // Construct target path using absolute paths\n  const basePath = '/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo';\n  const targetPath = `${basePath}/Processed/${targetFolder}/${fileName}`;\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      sourceFilePath: sourceFilePath,\n      targetPath: targetPath,\n      classification: geminiResponse,\n      targetFolder: targetFolder,\n      processedAt: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
       },
       "id": "parse-classification",
       "name": "Parse Classification",
