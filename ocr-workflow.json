@@ -94,13 +94,13 @@
     {
       "parameters": {
         "operation": "move",
-        "sourcePath": "={{ $json.sourceFilePath }}",
-        "destinationPath": "={{ $json.targetPath }}"
+        "source": "={{ $json.sourceFilePath }}",
+        "destination": "={{ $json.targetPath }}"
       },
       "id": "move-file",
       "name": "Move to Classified Folder",
-      "type": "n8n-nodes-base.moveBinaryFile",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.moveFiles",
+      "typeVersion": 2,
       "position": [1450, 300]
     }
   ],
