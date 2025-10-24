@@ -112,6 +112,26 @@
       "type": "n8n-nodes-base.moveBinaryFile",
       "typeVersion": 1,
       "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "catch-errors",
+      "name": "Catch Errors",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [1600, 300]
+    },
+    {
+      "parameters": {
+        "message": "Error occurred in workflow: {{$json}}"
+      },
+      "id": "log-error",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.logMessage",
+      "typeVersion": 1,
+      "position": [1700, 300]
     }
   ],
   "connections": {
@@ -186,6 +206,28 @@
         [
           {
             "node": "Move to Classified Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Classified Folder": {
+      "main": [
+        [
+          {
+            "node": "Catch Errors",
+            "type": "error",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Catch Errors": {
+      "main": [
+        [
+          {
+            "node": "Log Error",
             "type": "main",
             "index": 0
           }
