@@ -24,16 +24,12 @@
     },
     {
       "parameters": {
-        "operation": "list",
-        "path": "={{ $node['Set Processing Paths'].json.sourcePath }}",
-        "options": {
-          "recursive": true,
-          "fileFilter": "*.pdf"
-        }
+        "directory": "={{ $node['Set Processing Paths'].json.sourcePath }}",
+        "filter": "*.pdf"
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
-      "type": "n8n-nodes-base.filesystem",
+      "type": "n8n-nodes-base.listFiles",
       "typeVersion": 1,
       "position": [450, 300]
     },
@@ -49,18 +45,17 @@
     },
     {
       "parameters": {
-        "path": "={{ $json.path }}",
-        "operation": "read"
+        "filePath": "={{ $json.path }}"
       },
       "id": "read-file",
       "name": "Read PDF File",
-      "type": "n8n-nodes-base.filesystem",
+      "type": "n8n-nodes-base.readBinaryFile",
       "typeVersion": 1,
       "position": [650, 300]
     },
     {
       "parameters": {
-        "jsCode": "// Convert PDF binary to base64 for Gemini\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  // Get the file content from the filesystem node\n  const fileContent = item.binary?.data || item.data;\n  const base64Data = Buffer.from(fileContent).toString('base64');\n  const fileName = item.json.path.split('/').pop();\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      filePath: item.json.path,\n      base64Content: base64Data,\n      mimeType: 'application/pdf'\n    }\n  });\n}\n\nreturn results;"
+        "jsCode": "// Convert PDF binary to base64 for Gemini\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const binaryData = item.binary.data;\n  const base64Data = Buffer.from(binaryData).toString('base64');\n  const fileName = item.json.path.split('/').pop();\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      filePath: item.json.path,\n      base64Content: base64Data,\n      mimeType: 'application/pdf'\n    }\n  });\n}\n\nreturn results;"
       },
       "id": "convert-to-base64",
       "name": "Convert to Base64",
@@ -109,13 +104,12 @@
     },
     {
       "parameters": {
-        "operation": "move",
-        "path": "={{ $json.sourceFilePath }}",
-        "newPath": "={{ $json.targetPath }}"
+        "sourceFilePath": "={{ $json.sourceFilePath }}",
+        "destinationFilePath": "={{ $json.targetPath }}"
       },
       "id": "move-file",
       "name": "Move to Classified Folder",
-      "type": "n8n-nodes-base.filesystem",
+      "type": "n8n-nodes-base.moveBinaryFile",
       "typeVersion": 1,
       "position": [1450, 300]
     }
