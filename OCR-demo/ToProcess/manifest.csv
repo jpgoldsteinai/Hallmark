@@ -1,0 +1,51 @@
+account_last4,agreement_number,bank,buyer,category,client,due_date,effective_date,ending_balance,filename,filer,form_type,holder,invoice_date,invoice_number,issuer,max_value,seller,statement_date,style,tax_year,term_months,title,total,vendor
+2657,,Metro Federal,,bank_statement,,,,664.4899999999996,bank_statement_01.pdf,,,Morgan Smith,,,,,,2023-11-06,,,,,,
+3965,,Metro Federal,,bank_statement,,,,-494.34000000000003,bank_statement_02.pdf,,,Riley Jackson,,,,,,2023-11-23,,,,,,
+7732,,Union Savings,,bank_statement,,,,198.34000000000037,bank_statement_03.pdf,,,Taylor White,,,,,,2025-05-16,,,,,,
+2980,,Union Savings,,bank_statement,,,,-227.9800000000006,bank_statement_04.pdf,,,Skyler Walker,,,,,,2025-02-23,,,,,,
+7030,,Union Savings,,bank_statement,,,,-1425.2500000000002,bank_statement_05.pdf,,,Skyler Anderson,,,,,,2024-06-23,,,,,,
+2691,,Metro Federal,,bank_statement,,,,6837.06,bank_statement_06.pdf,,,Drew Jackson,,,,,,2025-06-28,,,,,,
+7141,,First National Bank,,bank_statement,,,,5641.000000000001,bank_statement_07.pdf,,,Jamie Miller,,,,,,2024-11-18,,,,,,
+7154,,Metro Federal,,bank_statement,,,,-491.37000000000046,bank_statement_08.pdf,,,Parker Brown,,,,,,2023-06-24,,,,,,
+8587,,Union Savings,,bank_statement,,,,3484.7000000000007,bank_statement_09.pdf,,,Skyler Garcia,,,,,,2024-06-25,,,,,,
+3506,,Union Savings,,bank_statement,,,,2688.810000000001,bank_statement_10.pdf,,,Hayden Smith,,,,,,2025-06-08,,,,,,
+,,,,invoice,Cobalt LLC,2024-04-28,,,invoice_01.pdf,,,,2024-03-14,INV-50888,,,,,,,,,4722.42,Evergreen Partners
+,,,,invoice,Crescent Ltd.,2024-01-27,,,invoice_02.pdf,,,,2023-12-28,INV-78386,,,,,,,,,6132.37,Harbor Ltd.
+,,,,invoice,Summit Inc.,2023-11-17,,,invoice_03.pdf,,,,2023-10-18,INV-41635,,,,,,,,,10774.7,Northstar Systems
+,,,,invoice,Ironwood Systems,2025-01-23,,,invoice_04.pdf,,,,2025-01-08,INV-88222,,,,,,,,,2185.26,Summit Solutions
+,,,,invoice,BlueRiver Partners,2025-07-15,,,invoice_05.pdf,,,,2025-06-30,INV-72616,,,,,,,,,5683.15,Nova Ltd.
+,,,,invoice,Cobalt Group,2025-04-21,,,invoice_06.pdf,,,,2025-03-22,INV-91987,,,,,,,,,5624.2,Silverstone LLC
+,,,,invoice,Sunline Inc.,2025-06-07,,,invoice_07.pdf,,,,2025-05-08,INV-17816,,,,,,,,,4680.98,Sunline Partners
+,,,,invoice,Crescent Solutions,2024-07-30,,,invoice_08.pdf,,,,2024-06-30,INV-21959,,,,,,,,,8533.9,Ironwood Ltd.
+,,,,invoice,BlueRiver Group,2024-04-25,,,invoice_09.pdf,,,,2024-04-10,INV-45003,,,,,,,,,13387.88,Copperfield Solutions
+,,,,invoice,Quantum Partners,2024-12-25,,,invoice_10.pdf,,,,2024-11-10,INV-64387,,,,,,,,,18644.11,Monarch Ltd.
+,PA-9617-68,,Harbor Inc.,purchasing_agreement,,,2025-10-09,,purchasing_agreement_01.pdf,,,,,,,64446.9,Nova Inc.,,,,12,,,
+,PA-4846-90,,BlueRiver Inc.,purchasing_agreement,,,2023-11-24,,purchasing_agreement_02.pdf,,,,,,,149626.76,Copperfield Systems,,,,18,,,
+,PA-9702-62,,Sunline Group,purchasing_agreement,,,2024-03-24,,purchasing_agreement_03.pdf,,,,,,,29647.63,Beacon Enterprises,,,,12,,,
+,PA-3588-19,,Silverstone Systems,purchasing_agreement,,,2024-07-29,,purchasing_agreement_04.pdf,,,,,,,148209.5,Northstar Solutions,,,,18,,,
+,PA-5497-11,,Northstar Enterprises,purchasing_agreement,,,2024-03-24,,purchasing_agreement_05.pdf,,,,,,,137039.46,Silverstone Partners,,,,6,,,
+,PA-6977-26,,Harbor LLC,purchasing_agreement,,,2025-07-24,,purchasing_agreement_06.pdf,,,,,,,52374.27,BlueRiver Partners,,,,18,,,
+,PA-2233-28,,Cobalt Solutions,purchasing_agreement,,,2023-09-13,,purchasing_agreement_07.pdf,,,,,,,129720.39,Silverstone Holdings,,,,12,,,
+,PA-4830-70,,Beacon Inc.,purchasing_agreement,,,2025-09-29,,purchasing_agreement_08.pdf,,,,,,,133214.05,Ironwood Enterprises,,,,36,,,
+,PA-4846-78,,Cobalt Inc.,purchasing_agreement,,,2025-06-08,,purchasing_agreement_09.pdf,,,,,,,70778.34,Silverstone Solutions,,,,24,,,
+,PA-6942-22,,Harbor Group,purchasing_agreement,,,2023-11-22,,purchasing_agreement_10.pdf,,,,,,,83947.55,Summit Solutions,,,,18,,,
+,,,,tax_document,,,,,tax_document_01.pdf,Drew Garcia,Form 941 (extract),,,,Summit Group,,,,,2019,,,,
+,,,,tax_document,,,,,tax_document_02.pdf,Casey King,Form W-2,,,,Cascade Partners,,,,,2020,,,,
+,,,,tax_document,,,,,tax_document_03.pdf,Rowan Miller,Form W-2,,,,Ironwood LLC,,,,,2019,,,,
+,,,,tax_document,,,,,tax_document_04.pdf,Skyler Jackson,Form 941 (extract),,,,GreenLeaf LLC,,,,,2022,,,,
+,,,,tax_document,,,,,tax_document_05.pdf,Emerson Anderson,Form 1040 Schedule C (extract),,,,Vertex Enterprises,,,,,2019,,,,
+,,,,tax_document,,,,,tax_document_06.pdf,Skyler Lee,Form W-2,,,,Quantum Ltd.,,,,,2023,,,,
+,,,,tax_document,,,,,tax_document_07.pdf,Emerson Anderson,Form 1040 Schedule C (extract),,,,Cobalt Inc.,,,,,2023,,,,
+,,,,tax_document,,,,,tax_document_08.pdf,Logan Martinez,Form 1040 Schedule C (extract),,,,Nova Solutions,,,,,2020,,,,
+,,,,tax_document,,,,,tax_document_09.pdf,Parker Harris,Form W-2,,,,Copperfield Inc.,,,,,2021,,,,
+,,,,tax_document,,,,,tax_document_10.pdf,Rowan Garcia,Form 941 (extract),,,,Cascade Holdings,,,,,2023,,,,
+,,,,undefinable,,,,,undefinable_01.pdf,,,,,,,,,,list,,,FYI,,
+,,,,undefinable,,,,,undefinable_02.pdf,,,,,,,,,,list,,,Notes,,
+,,,,undefinable,,,,,undefinable_03.pdf,,,,,,,,,,note,,,Draft Thoughts,,
+,,,,undefinable,,,,,undefinable_04.pdf,,,,,,,,,,note,,,Untitled,,
+,,,,undefinable,,,,,undefinable_05.pdf,,,,,,,,,,memo,,,Draft Thoughts,,
+,,,,undefinable,,,,,undefinable_06.pdf,,,,,,,,,,flyer,,,Remember This,,
+,,,,undefinable,,,,,undefinable_07.pdf,,,,,,,,,,email,,,Remember This,,
+,,,,undefinable,,,,,undefinable_08.pdf,,,,,,,,,,memo,,,Untitled,,
+,,,,undefinable,,,,,undefinable_09.pdf,,,,,,,,,,flyer,,,FYI,,
+,,,,undefinable,,,,,undefinable_10.pdf,,,,,,,,,,poem,,,Draft Thoughts,,
