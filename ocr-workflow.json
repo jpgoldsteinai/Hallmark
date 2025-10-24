@@ -24,12 +24,11 @@
     },
     {
       "parameters": {
-        "directory": "={{ $node['Set Processing Paths'].json.sourcePath }}",
-        "filter": "*.pdf"
+        "directoryPath": "={{ $node['Set Processing Paths'].json.sourcePath }}"
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
-      "type": "n8n-nodes-base.listFiles",
+      "type": "n8n-nodes-base.readDirectory",
       "typeVersion": 1,
       "position": [450, 300]
     },
@@ -115,23 +114,13 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "id": "catch-errors",
-      "name": "Catch Errors",
-      "type": "n8n-nodes-base.errorTrigger",
-      "typeVersion": 1,
-      "position": [1600, 300]
-    },
-    {
-      "parameters": {
-        "message": "Error occurred in workflow: {{$json}}"
+        "jsCode": "console.error('Error:', $json);"
       },
       "id": "log-error",
       "name": "Log Error",
-      "type": "n8n-nodes-base.logMessage",
-      "typeVersion": 1,
-      "position": [1700, 300]
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1550, 300]
     }
   ],
   "connections": {
