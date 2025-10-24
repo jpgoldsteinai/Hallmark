@@ -3,28 +3,29 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
+        "values": {
+          "string": [
             {
-              "field": "minutes",
-              "minutesInterval": 5
+              "name": "sourcePath",
+              "value": "/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo/ToProcess"
+            },
+            {
+              "name": "targetBasePath",
+              "value": "/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo/Processed"
             }
           ]
         }
       },
-      "id": "schedule-trigger",
-      "name": "Check Every 5 Minutes",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "id": "workflow-trigger",
+      "name": "Set Processing Paths",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
       "position": [250, 300]
     },
     {
       "parameters": {
-        "operation": "readdir",
-        "path": "/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo/ToProcess",
-        "options": {
-          "fileExtension": "pdf"
-        }
+        "operation": "glob",
+        "path": "={{ $node['Set Processing Paths'].json.sourcePath }}/**/*.pdf"
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
@@ -35,7 +36,7 @@
     {
       "parameters": {
         "operation": "read",
-        "filePath": "={{ $json.path }}",
+        "filePath": "={{ $json.name }}",
         "dataPropertyName": "data"
       },
       "id": "read-file",
@@ -46,7 +47,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Convert PDF binary to base64 for Gemini\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const binaryData = item.binary.data;\n  const base64Data = binaryData.toString('base64');\n  const fileName = item.json.path.split('/').pop();\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      filePath: item.json.path,\n      base64Content: base64Data,\n      mimeType: 'application/pdf'\n    }\n  });\n}\n\nreturn results;"
+        "jsCode": "// Convert PDF binary to base64 for Gemini\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const binaryData = item.binary.data;\n  const base64Data = binaryData.toString('base64');\n  const fileName = item.json.name.split('/').pop();\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      filePath: item.json.path,\n      base64Content: base64Data,\n      mimeType: 'application/pdf'\n    }\n  });\n}\n\nreturn results;"
       },
       "id": "convert-to-base64",
       "name": "Convert to Base64",
@@ -85,7 +86,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Extract classification from Gemini response and determine target folder\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const geminiResponse = item.json.candidates[0].content.parts[0].text.trim();\n  \n  // Map classification to folder\n  let targetFolder = 'CouldNotClassify';\n  \n  if (geminiResponse.toLowerCase().includes('invoice')) {\n    targetFolder = 'Invoices';\n  } else if (geminiResponse.toLowerCase().includes('bank statement')) {\n    targetFolder = 'BankStatements';\n  } else if (geminiResponse.toLowerCase().includes('tax record')) {\n    targetFolder = 'TaxRecords';\n  } else if (geminiResponse.toLowerCase().includes('executive report')) {\n    targetFolder = 'ExecutiveReports';\n  }\n  \n  // Get source file path from earlier node\n  const sourceFilePath = item.json.filePath;\n  const fileName = item.json.fileName;\n  \n  // Construct target path using absolute paths\n  const basePath = '/Users/jonathangoldstein/Documents/CoPointAI/Hallmark/OCR-demo';\n  const targetPath = `${basePath}/Processed/${targetFolder}/${fileName}`;\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      sourceFilePath: sourceFilePath,\n      targetPath: targetPath,\n      classification: geminiResponse,\n      targetFolder: targetFolder,\n      processedAt: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
+        "jsCode": "// Extract classification from Gemini response and determine target folder\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const geminiResponse = item.json.candidates[0].content.parts[0].text.trim();\n  \n  // Map classification to folder\n  let targetFolder = 'CouldNotClassify';\n  \n  if (geminiResponse.toLowerCase().includes('invoice')) {\n    targetFolder = 'Invoices';\n  } else if (geminiResponse.toLowerCase().includes('bank statement')) {\n    targetFolder = 'BankStatements';\n  } else if (geminiResponse.toLowerCase().includes('tax record')) {\n    targetFolder = 'TaxRecords';\n  } else if (geminiResponse.toLowerCase().includes('executive report')) {\n    targetFolder = 'ExecutiveReports';\n  }\n  \n  // Get source file path from earlier node\n  const sourceFilePath = item.json.filePath;\n  const fileName = item.json.fileName;\n  \n  // Construct target path using absolute paths\n  const basePath = $node['Set Processing Paths'].json.targetBasePath;\n  const targetPath = `${basePath}/Processed/${targetFolder}/${fileName}`;\n  \n  results.push({\n    json: {\n      fileName: fileName,\n      sourceFilePath: sourceFilePath,\n      targetPath: targetPath,\n      classification: geminiResponse,\n      targetFolder: targetFolder,\n      processedAt: new Date().toISOString()\n    }\n  });\n}\n\nreturn results;"
       },
       "id": "parse-classification",
       "name": "Parse Classification",
