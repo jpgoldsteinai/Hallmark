@@ -24,15 +24,12 @@
     },
     {
       "parameters": {
-        "folder": "={{ $node['Set Processing Paths'].json.sourcePath }}",
-        "fileType": "pdf",
-        "options": {
-          "includingSubfolders": true
-        }
+        "operation": "list",
+        "path": "={{ $node['Set Processing Paths'].json.sourcePath }}"
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
-      "type": "n8n-nodes-base.filesFolder",
+      "type": "n8n-nodes-base.fileFolder",
       "typeVersion": 1,
       "position": [450, 300]
     },
@@ -48,12 +45,13 @@
     },
     {
       "parameters": {
+        "operation": "read",
         "filePath": "={{ $json.path }}"
       },
       "id": "read-file",
       "name": "Read PDF File",
-      "type": "n8n-nodes-base.readBinaryFile",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.fileFolder",
+      "typeVersion": 1,
       "position": [650, 300]
     },
     {
@@ -108,12 +106,12 @@
     {
       "parameters": {
         "operation": "move",
-        "sourcePath": "={{ $json.sourceFilePath }}",
-        "destinationPath": "={{ $json.targetPath }}"
+        "source": "={{ $json.sourceFilePath }}",
+        "destination": "={{ $json.targetPath }}"
       },
       "id": "move-file",
       "name": "Move to Classified Folder",
-      "type": "n8n-nodes-base.moveFile",
+      "type": "n8n-nodes-base.fileFolder",
       "typeVersion": 1,
       "position": [1450, 300]
     }
