@@ -24,25 +24,36 @@
     },
     {
       "parameters": {
-        "operation": "glob",
-        "path": "={{ $node['Set Processing Paths'].json.sourcePath }}/**/*.pdf"
+        "folder": "={{ $node['Set Processing Paths'].json.sourcePath }}",
+        "fileType": "pdf",
+        "options": {
+          "includingSubfolders": true
+        }
       },
       "id": "list-pdfs",
       "name": "List PDFs in Folder",
-      "type": "n8n-nodes-base.readWriteFile",
+      "type": "n8n-nodes-base.filesFolder",
       "typeVersion": 1,
       "position": [450, 300]
     },
     {
       "parameters": {
-        "operation": "read",
-        "filePath": "={{ $json.name }}",
-        "dataPropertyName": "data"
+        "options": {}
+      },
+      "id": "loop-items",
+      "name": "Loop PDFs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.path }}"
       },
       "id": "read-file",
       "name": "Read PDF File",
       "type": "n8n-nodes-base.readBinaryFile",
-      "typeVersion": 1,
+      "typeVersion": 2,
       "position": [650, 300]
     },
     {
@@ -96,17 +107,13 @@
     },
     {
       "parameters": {
-        "operation": "write",
-        "filePath": "={{ $json.targetPath }}",
-        "binaryData": "={{ $binary.data }}",
-        "binaryPropertyName": "data",
-        "options": {
-          "encoding": "binary"
-        }
+        "operation": "move",
+        "sourcePath": "={{ $json.sourceFilePath }}",
+        "destinationPath": "={{ $json.targetPath }}"
       },
       "id": "move-file",
       "name": "Move to Classified Folder",
-      "type": "n8n-nodes-base.readWriteFile",
+      "type": "n8n-nodes-base.moveFile",
       "typeVersion": 1,
       "position": [1450, 300]
     }
@@ -124,6 +131,17 @@
       ]
     },
     "List PDFs in Folder": {
+      "main": [
+        [
+          {
+            "node": "Loop PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop PDFs": {
       "main": [
         [
           {
